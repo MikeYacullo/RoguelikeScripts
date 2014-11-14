@@ -68,6 +68,10 @@ public class GameController : MonoBehaviour
 	private List<Enemy> enemies = new List<Enemy> ();
 	private List<Enemy>[] levelEnemies;
 	
+	private List<Item> items = new List<Item> ();
+	private List<Item>[] levelItems;
+	private List<Type>[] levelItemTypes;
+	
 	int LEVEL_COUNT = 5;
 	//tilemap constants
 	int LAYER_FLOOR_AND_WALLS = 0;
@@ -91,6 +95,7 @@ public class GameController : MonoBehaviour
 		gameState = GameState.Initializing;
 		camera = GameObject.Find ("camera").GetComponent<tk2dCamera> ();
 		tileMapCharacters = GameObject.Find ("TileMapCharacters").GetComponent<tk2dTileMap> ();
+		tileMapItems = GameObject.Find ("TileMapItems").GetComponent<tk2dTileMap> ();
 		txtMessages = GameObject.Find ("txtMessages").GetComponent<UnityEngine.UI.Text> ();
 		
 		pnlTransition = GameObject.Find ("pnlTransition");
@@ -103,9 +108,14 @@ public class GameController : MonoBehaviour
 		health4 = GameObject.Find ("health4").GetComponent<UnityEngine.UI.Image> ();
 		levels = new Map[LEVEL_COUNT];
 		levelEnemies = new List<Enemy>[LEVEL_COUNT];
+		levelItems = new List<Item>[LEVEL_COUNT];
 		for (int i=0; i<LEVEL_COUNT; i++) {
 			levels [i] = new Map (mapWidth, mapHeight);
 		}
+		
+		levelItemTypes = new List<Type>[LEVEL_COUNT];
+		levelItemTypes [0] = new List<Type> {typeof(PotionRed_S), typeof(Gold_S)};
+		
 		DisplayMessage ("Welcome.");
 		CreatePlayerCharacter ();
 		currentLevel = -1;
@@ -129,6 +139,7 @@ public class GameController : MonoBehaviour
 		InitMap ();
 		InitPlayerCharacter ();
 		InitEnemies ();
+		InitItems ();
 		UpdateHud ();
 		pnlTransition.SetActive (false);
 		gameState = GameState.TurnPlayer;
@@ -140,6 +151,42 @@ public class GameController : MonoBehaviour
 		if (currentLevel != -1) {
 			levelEnemies [currentLevel] = enemies;
 		}
+	}
+	
+	void InitItems ()
+	{
+		for (int i=0; i<10; i++) {
+			//pick an item from the list
+			int itemNum = UnityEngine.Random.Range (0, levelItemTypes [currentLevel].Count);
+			
+			Type t = levelItemTypes [currentLevel] [itemNum];
+			Item item;
+			item = (Item)Activator.CreateInstance (t);
+			item.Location = map.GetRandomCell (true);
+			items.Add (item);
+		}
+		RenderItems ();
+	}
+	
+	private void RenderItems ()
+	{
+		//clear the whole thing
+		for (int w=0; w<mapWidth; w++) {
+			for (int h=0; h<mapHeight; h++) {
+				if (map.Cells [w, h].Visited) {
+					tileMapItems.ClearTile (w, h, 0);
+				}
+			}
+		}
+		//draw items
+		for (int i=0; i<items.Count; i++) {
+			if (map.Cells [items [i].Location.x, items [i].Location.y].Visited) {
+				//TODO optimize this!
+				int spriteId = tileMapItems.SpriteCollectionInst.GetSpriteIdByName (items [i].SpriteName);
+				tileMapItems.SetTile (items [i].Location.x, items [i].Location.y, 0, spriteId);
+			}
+		}
+		tileMapItems.Build ();
 	}
 
 	void InitMap ()
@@ -383,6 +430,7 @@ public class GameController : MonoBehaviour
 			tileMapCharacters.SetTileFlags (pc.Location.x, pc.Location.y, 0, tk2dTileFlags.FlipX);
 		}
 		tileMapCharacters.Build ();
+		RenderItems ();
 		camera.transform.position = new Vector3 (pc.Location.x * cameraScaleFactor, pc.Location.y * cameraScaleFactor, -10);		
 	}
 	
@@ -396,6 +444,7 @@ public class GameController : MonoBehaviour
 			}
 		}
 		RenderTMCharacters ();
+		RenderItems ();
 		UpdateHud ();
 		gameState = GameState.TurnPlayer;
 	}

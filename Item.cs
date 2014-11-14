@@ -3,8 +3,8 @@ using System.Collections;
 
 public abstract class Item
 {
-	public int LevelFound;
 	public int Value = 0;
+	public Address Location;
 	public string Name;
 	public string SpriteName;
 	public int DefensePowerAdj = 0;
@@ -12,6 +12,20 @@ public abstract class Item
 	public int AttackMaxDamageAdj = 0;
 	public int HealthAdj = 0;
 	public int VisionRangeAdj = 0;
+}
+
+public enum ItemSlotType
+{
+	Weapon,
+	Armor,
+	Boots,
+	Helm,
+	Ring
+}
+
+public abstract class ItemEquippable
+{
+	public ItemSlotType EquipSlot;
 }
 
 public abstract class ItemConsumable : Item
@@ -24,7 +38,7 @@ public class Gold_S : ItemConsumable
 {
 	public Gold_S ()
 	{
-		SpriteName = "Gold_S";
+		SpriteName = "gold_s";
 		Value = Random.Range (1, 10);
 		IsConsumedOnPIckup = true;
 	}
@@ -38,7 +52,7 @@ public class PotionRed_S : ItemConsumable
 {
 	public PotionRed_S ()
 	{
-		SpriteName = "Small Red Potion";
+		SpriteName = "potionRed_s";
 	}
 	public override string Consume ()
 	{
