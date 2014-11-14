@@ -8,6 +8,8 @@ public class GameController : MonoBehaviour
 
 	public tk2dTileMap tileMapTerrain;
 	
+	public tk2dTileMap tileMapItems;
+	
 	private tk2dCamera camera;
 
 	private Map[] levels;
