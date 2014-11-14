@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerCharacter : Actor
 {
@@ -20,6 +21,8 @@ public class PlayerCharacter : Actor
 	public ClassType classType;
 	
 	public bool IsMale;
+	
+	public List<Item> Inventory = new List<Item> ();
 		
 	public PlayerCharacter ()
 	{
@@ -30,6 +33,12 @@ public class PlayerCharacter : Actor
 		MaxHealth = 10;
 		CurrentHealth = 10;
 		this.VisionRange = 6;
+	}
+	
+	public bool AddToInventory (Item item)
+	{
+		Inventory.Add (item);
+		return true;
 	}
 	
 	public PlayerCharacter (ClassType classType, bool isMale)

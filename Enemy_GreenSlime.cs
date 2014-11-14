@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy_GreenSlime : Enemy {
-	public override void Move(Map map){
-		if(!Chase (map)){
+public class Enemy_GreenSlime : Enemy
+{
+	public override void Move (Map map)
+	{
+		if (!Chase (map)) {
 			//flap around randomly
-			int dx = Random.Range(-1,2);
-			int dy = Random.Range(-1,2);
-			MoveToLocation(map,new Address(Location.x+dx, Location.y+dy));
+			int dx = Random.Range (-1, 2);
+			int dy = Random.Range (-1, 2);
+			MoveToLocation (map, new Address (Location.x + dx, Location.y + dy));
 		}
 	}
 	
-	public Enemy_GreenSlime(Address address){
-		this.Location = address;
+	public Enemy_GreenSlime ()
+	{
 		Name = "Green Slime";
 		MaxHealth = 10;
 		CurrentHealth = MaxHealth;

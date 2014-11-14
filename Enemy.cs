@@ -6,6 +6,7 @@ public abstract class Enemy : Actor
 {
 	public string SpriteName;
 	public abstract void Move (Map map);
+	public Item Loot;
 	public Enemy ()
 	{
 		VisionRange = 6;

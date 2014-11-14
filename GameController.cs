@@ -64,15 +64,20 @@ public class GameController : MonoBehaviour
 	public AudioClip audioHitPlayer;
 	public AudioClip audioWhiff;
 	public AudioClip audioDieEnemy;
+	public AudioClip audioLoot;
 	
 	private List<Enemy> enemies = new List<Enemy> ();
 	private List<Enemy>[] levelEnemies;
+	private List<Type>[] levelEnemyTypes;
 	
 	private List<Item> items = new List<Item> ();
 	private List<Item>[] levelItems;
 	private List<Type>[] levelItemTypes;
 	
 	int LEVEL_COUNT = 5;
+	int ITEMS_PER_LEVEL_COUNT = 1;
+	int ENEMIES_PER_LEVEL_COUNT = 10;
+	
 	//tilemap constants
 	int LAYER_FLOOR_AND_WALLS = 0;
 	int LAYER_DOORS_AND_STAIRS = 1;
@@ -107,12 +112,17 @@ public class GameController : MonoBehaviour
 		health3 = GameObject.Find ("health3").GetComponent<UnityEngine.UI.Image> ();
 		health4 = GameObject.Find ("health4").GetComponent<UnityEngine.UI.Image> ();
 		levels = new Map[LEVEL_COUNT];
-		levelEnemies = new List<Enemy>[LEVEL_COUNT];
-		levelItems = new List<Item>[LEVEL_COUNT];
+		
 		for (int i=0; i<LEVEL_COUNT; i++) {
 			levels [i] = new Map (mapWidth, mapHeight);
 		}
 		
+		
+		levelEnemies = new List<Enemy>[LEVEL_COUNT];
+		levelEnemyTypes = new List<Type>[LEVEL_COUNT];
+		levelEnemyTypes [0] = new List<Type>{typeof(Enemy_Bat), typeof(Enemy_GreenSlime), typeof(Enemy_Spider)};
+		
+		levelItems = new List<Item>[LEVEL_COUNT];
 		levelItemTypes = new List<Type>[LEVEL_COUNT];
 		levelItemTypes [0] = new List<Type> {typeof(PotionRed_S), typeof(Gold_S)};
 		
@@ -155,17 +165,22 @@ public class GameController : MonoBehaviour
 	
 	void InitItems ()
 	{
-		for (int i=0; i<10; i++) {
+		for (int i=0; i<ITEMS_PER_LEVEL_COUNT; i++) {
 			//pick an item from the list
-			int itemNum = UnityEngine.Random.Range (0, levelItemTypes [currentLevel].Count);
-			
-			Type t = levelItemTypes [currentLevel] [itemNum];
-			Item item;
-			item = (Item)Activator.CreateInstance (t);
+			Item item = ItemForLevel (currentLevel);
 			item.Location = map.GetRandomCell (true);
 			items.Add (item);
 		}
 		RenderItems ();
+	}
+	
+	private Item ItemForLevel (int level)
+	{
+		int itemNum = UnityEngine.Random.Range (0, levelItemTypes [level].Count);	
+		Type t = levelItemTypes [level] [itemNum];
+		Item item;
+		item = (Item)Activator.CreateInstance (t);
+		return item;
 	}
 	
 	private void RenderItems ()
@@ -250,22 +265,23 @@ public class GameController : MonoBehaviour
 			enemies = levelEnemies [currentLevel];
 		} else {
 			enemies = new List<Enemy> ();
-			for (int i=0; i<3; i++) {
-				Enemy_Bat enemy = new Enemy_Bat (map.GetRandomCell (true));
+			for (int i=0; i<ENEMIES_PER_LEVEL_COUNT; i++) {
+				Enemy enemy = EnemyForLevel (currentLevel);
+				enemy.Location = map.GetRandomCell (true);
+				enemy.Loot = ItemForLevel (currentLevel);
 				enemies.Add (enemy);
 			}
-		
-			for (int i=0; i<3; i++) {
-				Enemy_Spider enemy = new Enemy_Spider (map.GetRandomCell (true));
-				enemies.Add (enemy);
-			}
-			for (int i=0; i<3; i++) {
-				Enemy_GreenSlime enemy = new Enemy_GreenSlime (map.GetRandomCell (true));
-				enemies.Add (enemy);
-			}
-		
 		}
 		RenderTMCharacters ();
+	}
+	
+	private Enemy EnemyForLevel (int level)
+	{
+		int index = UnityEngine.Random.Range (0, levelItemTypes [level].Count);	
+		Type t = levelEnemyTypes [level] [index];
+		Enemy enemy;
+		enemy = (Enemy)Activator.CreateInstance (t);
+		return enemy;
 	}
 	
 	
@@ -510,9 +526,11 @@ public class GameController : MonoBehaviour
 					map.Cells [newX, newY].BlocksVision = false;
 					audio.PlayOneShot (audioDoor, VOLUME);
 				} else if (map.Cells [newX, newY].Type == Map.CellType.Exit && currentLevel != LEVEL_COUNT - 1) {
+					MovePlayerTo (new Address (newX, newY));
 					map.Cells [pc.Location.x, pc.Location.y].Passable = true;
 					MoveToLevel (currentLevel + 1);
 				} else if (map.Cells [newX, newY].Type == Map.CellType.Entrance && currentLevel != 0) {
+					MovePlayerTo (new Address (newX, newY));
 					map.Cells [pc.Location.x, pc.Location.y].Passable = true;
 					MoveToLevel (currentLevel - 1);
 				} else {
@@ -523,27 +541,61 @@ public class GameController : MonoBehaviour
 			} else {
 				//combat?
 				//does the square contain an enemy?
-				//TODO make map of enemies so we don't have to loop through
-				int enemyIndex = -1;
-				for (int i=0; i<enemies.Count; i++) {
-					if (enemies [i].Location.x == newX && enemies [i].Location.y == newY) {
-						enemyIndex = i;
-						break;
-					}
-				}
+				int enemyIndex = EnemyAt (new Address (newX, newY));
 				if (enemyIndex != -1) {
 					CombatCheck (pc, enemies [enemyIndex]);
 					//TODO encapsulate
 					if (enemies [enemyIndex].CurrentHealth <= 0) {
 						audio.PlayOneShot (audioDieEnemy, VOLUME);
+						//drop loot
+						Item loot = enemies [enemyIndex].Loot;
+						loot.Location = new Address (enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y);
+						items.Add (loot);
+						//remove enemy
 						map.Cells [enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y].Passable = true;
-						enemies.RemoveAt (enemyIndex);
+						enemies.RemoveAt (enemyIndex);						
 					}
 				}
 			}
 			UpdateHud ();
 			gameState = GameState.TurnEnemy;
 		}
+	}
+	
+	private void GetLoot (Address location)
+	{
+		//any loot to pick up?
+		int itemIndex = ItemAt (new Address (location.x, location.y));
+		if (itemIndex != -1) {
+			if (pc.AddToInventory (items [itemIndex])) {
+				items.RemoveAt (itemIndex);
+				audio.PlayOneShot (audioLoot, VOLUME);
+			}
+		}
+	}
+	
+	private int EnemyAt (Address location)
+	{
+		int enemyIndex = -1;
+		for (int i=0; i<enemies.Count; i++) {
+			if (enemies [i].Location.x == location.x && enemies [i].Location.y == location.y) {
+				enemyIndex = i;
+				break;
+			}
+		}	
+		return enemyIndex;
+	}
+	
+	private int ItemAt (Address location)
+	{
+		int itemIndex = -1;
+		for (int i=0; i<items.Count; i++) {
+			if (items [i].Location.x == location.x && items [i].Location.y == location.y) {
+				itemIndex = i;
+				break;
+			}
+		}	
+		return itemIndex;
 	}
 	
 	private void MovePlayerTo (Address newLocation)
@@ -554,6 +606,7 @@ public class GameController : MonoBehaviour
 		//block character's current location
 		map.Cells [pc.Location.x, pc.Location.y].Passable = false;
 		map.pcLocation = newLocation;
+		GetLoot (newLocation);
 	}
 	
 	private void CombatCheck (Actor attacker, Actor defender)
