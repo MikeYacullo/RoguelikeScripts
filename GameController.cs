@@ -99,6 +99,9 @@ public class GameController : MonoBehaviour
 		Debug.Log ("new game!");
 		gameState = GameState.Initializing;
 		camera = GameObject.Find ("camera").GetComponent<tk2dCamera> ();
+		
+		VOLUME = float.Parse (PlayerPrefs.GetString ("soundLevel"));
+		
 		tileMapCharacters = GameObject.Find ("TileMapCharacters").GetComponent<tk2dTileMap> ();
 		tileMapItems = GameObject.Find ("TileMapItems").GetComponent<tk2dTileMap> ();
 		txtMessages = GameObject.Find ("txtMessages").GetComponent<UnityEngine.UI.Text> ();
