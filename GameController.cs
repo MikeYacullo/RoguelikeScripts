@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
 	{
 		Initializing
 		,
+		Inventory
+		,
 		LevelTransition
 		,
 		TurnPlayer
@@ -45,6 +47,8 @@ public class GameController : MonoBehaviour
 	
 	private GameObject pnlTransition;
 	private UnityEngine.UI.Text txtTransition;
+	
+	private GameObject pnlInventory;
 	
 	private float SECONDS_BETWEEN_TURNS = 0.1f;
 	
@@ -110,6 +114,9 @@ public class GameController : MonoBehaviour
 		txtTransition = GameObject.Find ("txtTransition").GetComponent<UnityEngine.UI.Text> ();
 		pnlTransition.SetActive (false);
 		
+		pnlInventory = GameObject.Find ("pnlInventory");
+		pnlInventory.SetActive (false);
+		
 		health1 = GameObject.Find ("health1").GetComponent<UnityEngine.UI.Image> ();
 		health2 = GameObject.Find ("health2").GetComponent<UnityEngine.UI.Image> ();
 		health3 = GameObject.Find ("health3").GetComponent<UnityEngine.UI.Image> ();
@@ -168,11 +175,15 @@ public class GameController : MonoBehaviour
 	
 	void InitItems ()
 	{
-		for (int i=0; i<ITEMS_PER_LEVEL_COUNT; i++) {
-			//pick an item from the list
-			Item item = ItemForLevel (currentLevel);
-			item.Location = map.GetRandomCell (true);
-			items.Add (item);
+		if (levelItems [currentLevel] != null) {
+			items = levelItems [currentLevel];
+		} else {
+			for (int i=0; i<ITEMS_PER_LEVEL_COUNT; i++) {
+				//pick an item from the list
+				Item item = ItemForLevel (currentLevel);
+				item.Location = map.GetRandomCell (true);
+				items.Add (item);
+			}
 		}
 		RenderItems ();
 	}
@@ -731,6 +742,17 @@ public class GameController : MonoBehaviour
 		//}
 	}
 	
+	public void ShowInventory ()
+	{
+		gameState = GameState.Inventory;
+		pnlInventory.SetActive (true);
+	}
+	
+	public void HideInventory ()
+	{
+		pnlInventory.SetActive (false);
+		gameState = GameState.TurnPlayer;
+	}
 
 	
 	
