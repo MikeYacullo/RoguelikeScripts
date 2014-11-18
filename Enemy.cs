@@ -9,10 +9,10 @@ public abstract class Enemy : Actor
 	public Item Loot;
 	public Enemy ()
 	{
-		VisionRange = 6;
-		AttackPower = 1;
-		AttackMaxDamage = 1;
-		DefensePower = 1;
+		Stats.VisionRange = 6;
+		Stats.AttackPower = 1;
+		Stats.AttackMaxDamage = 1;
+		Stats.DefensePower = 1;
 	}
 	
 	public bool Chase (Map map)
@@ -20,7 +20,7 @@ public abstract class Enemy : Actor
 		//if the player is not in vision range we don't even need to do the check
 		float distance = map.DistanceToPlayer (Location);
 		//Debug.Log (distance);
-		if (Mathf.RoundToInt (distance) > VisionRange) {
+		if (Mathf.RoundToInt (distance) > Stats.VisionRange) {
 			//Debug.Log("i can't see pc");
 			return false;
 		}
@@ -29,7 +29,7 @@ public abstract class Enemy : Actor
 			return true;
 		}
 		//get visible cells
-		List<Address> visible = map.findVisibleCellsFlood (Location, VisionRange);
+		List<Address> visible = map.findVisibleCellsFlood (Location, Stats.VisionRange);
 		//is the player location in one of those?
 		Address pc = map.pcLocation;
 		//Debug.Log ("Can " + Location.x + "," + Location.y + " see " + pc.x + "," + pc.y + "?");	

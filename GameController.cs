@@ -410,7 +410,7 @@ public class GameController : MonoBehaviour
 	private void UpdateHud ()
 	{
 		//update hearts
-		float healthFraction = ((float)pc.CurrentHealth / (float)pc.MaxHealth);
+		float healthFraction = ((float)pc.Stats.CurrentHealth / (float)pc.Stats.MaxHealth);
 		//Debug.Log ("Health:" + healthFraction);
 		if (healthFraction <= 0) {
 			health4.sprite = spriteHeartEmpty;
@@ -563,7 +563,7 @@ public class GameController : MonoBehaviour
 				if (enemyIndex != -1) {
 					CombatCheck (pc, enemies [enemyIndex]);
 					//TODO encapsulate
-					if (enemies [enemyIndex].CurrentHealth <= 0) {
+					if (enemies [enemyIndex].Stats.CurrentHealth <= 0) {
 						audio.PlayOneShot (audioDieEnemy, VOLUME);
 						//drop loot
 						Item loot = enemies [enemyIndex].Loot;
@@ -635,9 +635,9 @@ public class GameController : MonoBehaviour
 		DisplayMessage (attacker.Name + " attacks " + defender.Name + "...");
 		if (UnityEngine.Random.Range (1, 10) > 4) {
 			//hit
-			int damage = UnityEngine.Random.Range (1, attacker.AttackMaxDamage + 1);
+			int damage = UnityEngine.Random.Range (1, attacker.Stats.AttackMaxDamage + 1);
 			DisplayMessage (defender.Name + " is hit for " + damage + " damage!");
-			defender.CurrentHealth -= damage;
+			defender.Stats.CurrentHealth -= damage;
 			if (attacker.GetType ().ToString () == "PlayerCharacter") {
 				audio.PlayOneShot (audioHitEnemy, VOLUME);
 			} else {
@@ -734,7 +734,7 @@ public class GameController : MonoBehaviour
 	private void SeeTilesFlood ()
 	{
 		bool newCellsSeen = false;
-		List<Address> vTiles = map.findVisibleCellsFlood (new Address (pc.Location.x, pc.Location.y), pc.VisionRange);
+		List<Address> vTiles = map.findVisibleCellsFlood (new Address (pc.Location.x, pc.Location.y), pc.Stats.VisionRange);
 		foreach (Address a in vTiles) {
 			//if (!map.Cells [a.x, a.y].Visited) {
 			map.Cells [a.x, a.y].Visited = true;

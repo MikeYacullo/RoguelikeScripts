@@ -16,11 +16,11 @@ public class Enemy_Spider : Enemy
 	public Enemy_Spider (Address address)
 	{
 		Name = "Spider";
-		MaxHealth = 5;
-		CurrentHealth = MaxHealth;
+		Stats.MaxHealth = 5;
+		Stats.CurrentHealth = Stats.MaxHealth;
 		SpriteName = "enemy_spider";
-		AttackPower = 1;
-		DefensePower = 2;
-		AttackMaxDamage = 1;
+		Stats.AttackPower = 1;
+		Stats.DefensePower = 2;
+		Stats.AttackMaxDamage = 1;
 	}
 }

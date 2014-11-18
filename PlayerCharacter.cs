@@ -28,12 +28,12 @@ public class PlayerCharacter : Actor
 	public PlayerCharacter ()
 	{
 		Name = "Player";
-		AttackPower = 1;
-		DefensePower = 1;
-		AttackMaxDamage = 5;
-		MaxHealth = 10;
-		CurrentHealth = 10;
-		this.VisionRange = 6;
+		Stats.AttackPower = 1;
+		Stats.DefensePower = 1;
+		Stats.AttackMaxDamage = 5;
+		Stats.MaxHealth = 10;
+		Stats.CurrentHealth = 10;
+		Stats.VisionRange = 6;
 	}
 	
 	public bool AddToInventory (Item item)
@@ -53,36 +53,36 @@ public class PlayerCharacter : Actor
 		Name = classType.ToString ();
 		switch (this.classType) {
 		case ClassType.Cleric:
-			AttackPower = 3;
-			DefensePower = 4;
-			AttackMaxDamage = 5;
-			MaxHealth = 10;
-			CurrentHealth = 10;
-			VisionRange = 6;
+			Stats.AttackPower = 3;
+			Stats.DefensePower = 4;
+			Stats.AttackMaxDamage = 5;
+			Stats.MaxHealth = 10;
+			Stats.CurrentHealth = 10;
+			Stats.VisionRange = 6;
 			break;
 		case ClassType.Fighter:
-			AttackPower = 2;
-			DefensePower = 2;
-			AttackMaxDamage = 5;
-			MaxHealth = 10;
-			CurrentHealth = 10;
-			VisionRange = 6;
+			Stats.AttackPower = 2;
+			Stats.DefensePower = 2;
+			Stats.AttackMaxDamage = 5;
+			Stats.MaxHealth = 10;
+			Stats.CurrentHealth = 10;
+			Stats.VisionRange = 6;
 			break;
 		case ClassType.Rogue:
-			AttackPower = 2;
-			DefensePower = 2;
-			AttackMaxDamage = 5;
-			MaxHealth = 10;
-			CurrentHealth = 10;
-			VisionRange = 8;
+			Stats.AttackPower = 2;
+			Stats.DefensePower = 2;
+			Stats.AttackMaxDamage = 5;
+			Stats.MaxHealth = 10;
+			Stats.CurrentHealth = 10;
+			Stats.VisionRange = 8;
 			break;
 		case ClassType.Wizard:
-			AttackPower = 4;
-			DefensePower = 2;
-			AttackMaxDamage = 5;
-			MaxHealth = 6;
-			CurrentHealth = 6;
-			VisionRange = 6;
+			Stats.AttackPower = 4;
+			Stats.DefensePower = 2;
+			Stats.AttackMaxDamage = 5;
+			Stats.MaxHealth = 6;
+			Stats.CurrentHealth = 6;
+			Stats.VisionRange = 6;
 			break;
 		default:
 			break;

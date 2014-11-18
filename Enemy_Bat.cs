@@ -17,10 +17,10 @@ public class Enemy_Bat : Enemy
 	{
 		Name = "Bat";
 		SpriteName = "enemy_bat";
-		MaxHealth = 5;
-		CurrentHealth = MaxHealth;
-		AttackPower = 1;
-		DefensePower = 1;
-		AttackMaxDamage = 1;
+		Stats.MaxHealth = 5;
+		Stats.CurrentHealth = Stats.MaxHealth;
+		Stats.AttackPower = 1;
+		Stats.DefensePower = 1;
+		Stats.AttackMaxDamage = 1;
 	}
 }

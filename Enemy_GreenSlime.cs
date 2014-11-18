@@ -16,11 +16,11 @@ public class Enemy_GreenSlime : Enemy
 	public Enemy_GreenSlime ()
 	{
 		Name = "Green Slime";
-		MaxHealth = 10;
-		CurrentHealth = MaxHealth;
+		Stats.MaxHealth = 5;
+		Stats.CurrentHealth = Stats.MaxHealth;
 		SpriteName = "enemy_greenslime";
-		AttackPower = 2;
-		DefensePower = 1;
-		AttackMaxDamage = 1;
+		Stats.AttackPower = 2;
+		Stats.DefensePower = 1;
+		Stats.AttackMaxDamage = 1;
 	}
 }
