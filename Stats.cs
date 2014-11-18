@@ -25,4 +25,17 @@ public class Stats
 		DefensePower += modifier.DefensePower;
 		AttackMaxDamage += modifier.AttackMaxDamage;
 	}
+	
+	public void Remove (Stats modifier)
+	{
+		//this will come in handy for unequipping
+		//so we don't have to invert each stat
+		MaxHealth -= modifier.MaxHealth;
+		CurrentHealth -= modifier.MaxHealth;
+		VisionRange -= modifier.VisionRange;
+		AttackPower -= modifier.AttackPower;
+		DefensePower -= modifier.DefensePower;
+		AttackMaxDamage -= modifier.AttackMaxDamage;
+	}
+	
 }

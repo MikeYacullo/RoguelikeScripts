@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Enemy_Spider : Enemy
 {
+/*
 	public override void Move (Map map)
 	{
 		if (!Chase (map)) {
@@ -23,4 +24,5 @@ public class Enemy_Spider : Enemy
 		Stats.DefensePower = 2;
 		Stats.AttackMaxDamage = 1;
 	}
+*/
 }

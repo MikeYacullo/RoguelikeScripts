@@ -280,7 +280,7 @@ public class GameController : MonoBehaviour
 		} else {
 			enemies = new List<Enemy> ();
 			for (int i=0; i<ENEMIES_PER_LEVEL_COUNT; i++) {
-				Enemy enemy = EnemyForLevel (currentLevel);
+				Enemy enemy = Factory.GetEnemyForLevel (currentLevel);
 				enemy.Location = map.GetRandomCell (true);
 				map.Cells [enemy.Location.x, enemy.Location.y].Passable = false;
 				enemy.Loot = ItemForLevel (currentLevel);
@@ -288,18 +288,7 @@ public class GameController : MonoBehaviour
 			}
 		}
 		RenderTMCharacters ();
-	}
-	
-	private Enemy EnemyForLevel (int level)
-	{
-		int index = UnityEngine.Random.Range (0, levelItemTypes [level].Count);	
-		Type t = levelEnemyTypes [level] [index];
-		Enemy enemy;
-		enemy = (Enemy)Activator.CreateInstance (t);
-		return enemy;
-	}
-	
-	
+	}	
 	
 	void InitCharacterSprite ()
 	{

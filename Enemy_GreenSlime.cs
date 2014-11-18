@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Enemy_GreenSlime : Enemy
 {
+/*
 	public override void Move (Map map)
 	{
 		if (!Chase (map)) {
@@ -23,4 +24,5 @@ public class Enemy_GreenSlime : Enemy
 		Stats.DefensePower = 1;
 		Stats.AttackMaxDamage = 1;
 	}
+	*/
 }

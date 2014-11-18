@@ -2,10 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class Enemy : Actor
+public class Enemy : Actor
 {
 	public string SpriteName;
-	public abstract void Move (Map map);
 	public Item Loot;
 	public Enemy ()
 	{
@@ -67,6 +66,16 @@ public abstract class Enemy : Actor
 			return false;
 		}
 		return true;
+	}
+	
+	public void Move (Map map)
+	{
+		if (!Chase (map)) {
+			//flap around randomly
+			int dx = Random.Range (-1, 2);
+			int dy = Random.Range (-1, 2);
+			MoveToLocation (map, new Address (Location.x + dx, Location.y + dy));
+		}
 	}
 	
 	public void MoveToLocation (Map map, Address newLocation)

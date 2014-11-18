@@ -23,7 +23,7 @@ public class PlayerCharacter : Actor
 	public bool IsMale;
 	
 	public List<Item> Inventory = new List<Item> ();
-	public int InventoryMaxSize = 4;
+	public int InventoryMaxSize = 25;
 		
 	public PlayerCharacter ()
 	{
