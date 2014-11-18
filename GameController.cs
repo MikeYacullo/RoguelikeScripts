@@ -515,6 +515,9 @@ public class GameController : MonoBehaviour
 		if (Input.GetKeyDown (KeyCode.RightBracket) && camera.ZoomFactor <= 4.5) {
 			camera.ZoomFactor += 0.5f;
 		}
+		if (Input.GetKeyDown (KeyCode.I)) {
+			ShowInventory ();
+		}
 		bool isMoving = false;
 		int newX = pc.Location.x, newY = pc.Location.y;
 		if (Input.GetKeyDown (KeyCode.D) || Input.GetKeyDown (KeyCode.RightArrow)) {
@@ -747,16 +750,9 @@ public class GameController : MonoBehaviour
 	public void ShowInventory ()
 	{
 		gameState = GameState.Inventory;
-		//render the backpack
-		for (int i=0; i<pc.Inventory.Count; i++) {
-			Debug.Log ("backpack slot " + i + ": " + pc.Inventory [i].Name);
-			
-			//  how to attach an image to the slot prefab?
-			//Sprite sprite = Resources.Load<Texture>("");
-			//GameObject.Find ("backpackSlot"+i).GetComponent<Slo
-			
-		}
 		pnlInventory.SetActive (true);
+		InventoryController ic = (InventoryController)pnlInventory.GetComponentInChildren<InventoryController> ();
+		ic.RenderInventory (pc.Inventory);
 	}
 	
 	public void HideInventory ()
