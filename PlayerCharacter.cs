@@ -23,6 +23,7 @@ public class PlayerCharacter : Actor
 	public bool IsMale;
 	
 	public List<Item> Inventory = new List<Item> ();
+	public int InventoryMaxSize = 4;
 		
 	public PlayerCharacter ()
 	{
@@ -37,8 +38,12 @@ public class PlayerCharacter : Actor
 	
 	public bool AddToInventory (Item item)
 	{
-		Inventory.Add (item);
-		return true;
+		if (Inventory.Count < InventoryMaxSize) {
+			Inventory.Add (item);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public PlayerCharacter (ClassType classType, bool isMale)

@@ -57,7 +57,7 @@ public class GameController : MonoBehaviour
 	public Sprite spriteHeartHalf;
 	public Sprite spriteHeartEmpty;
 
-	private int mapWidth = 19, mapHeight = 19;
+	private int mapWidth = 35, mapHeight = 35;
 	
 	private int cameraScaleFactor = 24;
 	
@@ -282,6 +282,7 @@ public class GameController : MonoBehaviour
 			for (int i=0; i<ENEMIES_PER_LEVEL_COUNT; i++) {
 				Enemy enemy = EnemyForLevel (currentLevel);
 				enemy.Location = map.GetRandomCell (true);
+				map.Cells [enemy.Location.x, enemy.Location.y].Passable = false;
 				enemy.Loot = ItemForLevel (currentLevel);
 				enemies.Add (enemy);
 			}
@@ -584,6 +585,7 @@ public class GameController : MonoBehaviour
 			if (pc.AddToInventory (items [itemIndex])) {
 				items.RemoveAt (itemIndex);
 				audio.PlayOneShot (audioLoot, VOLUME);
+				DisplayMessage ("Picked up " + pc.Inventory [pc.Inventory.Count - 1].Name);
 			}
 		}
 	}
@@ -745,6 +747,15 @@ public class GameController : MonoBehaviour
 	public void ShowInventory ()
 	{
 		gameState = GameState.Inventory;
+		//render the backpack
+		for (int i=0; i<pc.Inventory.Count; i++) {
+			Debug.Log ("backpack slot " + i + ": " + pc.Inventory [i].Name);
+			
+			//  how to attach an image to the slot prefab?
+			//Sprite sprite = Resources.Load<Texture>("");
+			//GameObject.Find ("backpackSlot"+i).GetComponent<Slo
+			
+		}
 		pnlInventory.SetActive (true);
 	}
 	

@@ -38,6 +38,7 @@ public class Gold_S : ItemConsumable
 {
 	public Gold_S ()
 	{
+		Name = "Small Pile of Gold";
 		SpriteName = "gold_s";
 		Value = Random.Range (1, 10);
 		IsConsumedOnPIckup = true;
@@ -52,6 +53,7 @@ public class PotionRed_S : ItemConsumable
 {
 	public PotionRed_S ()
 	{
+		Name = "Small Red Potion";
 		SpriteName = "potionRed_s";
 	}
 	public override string Consume ()
