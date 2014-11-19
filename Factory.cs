@@ -31,25 +31,30 @@ public static class Factory
 			break;
 		}
 		EnemyType type = enemies [Random.Range (0, enemies.Count)];
-		return CreateEnemy (type);
+		return CreateEnemy (type, level);
 	}
 
-	public static Enemy CreateEnemy (EnemyType eType)
+	public static Enemy CreateEnemy (EnemyType eType, int level)
 	{
+		Enemy enemy = new Enemy ();
 		switch (eType) {
 		case EnemyType.Bat:
-			return NewBat ();
+			enemy = NewBat ();
 			break;
 		case EnemyType.GreenSlime:
-			return NewGreenSlime ();
+			enemy = NewGreenSlime ();
 			break;
 		case EnemyType.Spider:
-			return NewSpider ();
+			enemy = NewSpider ();
 			break;
 		default:
 			//this should never happen!
-			return new Enemy ();
+			break;
 		}
+		if (Random.Range (0, 10) == 0) {
+			enemy = Mutator.Mutate (enemy, level + 1);
+		}
+		return enemy;
 	}
 
 	public static Enemy NewBat ()
