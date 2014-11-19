@@ -129,13 +129,9 @@ public class GameController : MonoBehaviour
 		
 		
 		levelEnemies = new List<Enemy>[LEVEL_COUNT];
-		levelEnemyTypes = new List<Type>[LEVEL_COUNT];
-		levelEnemyTypes [0] = new List<Type>{typeof(Enemy_Bat), typeof(Enemy_GreenSlime), typeof(Enemy_Spider)};
-		
+
 		levelItems = new List<Item>[LEVEL_COUNT];
-		levelItemTypes = new List<Type>[LEVEL_COUNT];
-		levelItemTypes [0] = new List<Type> {typeof(PotionRed_S), typeof(Gold_S)};
-		
+			
 		DisplayMessage ("Welcome.");
 		CreatePlayerCharacter ();
 		currentLevel = -1;
@@ -180,22 +176,14 @@ public class GameController : MonoBehaviour
 		} else {
 			for (int i=0; i<ITEMS_PER_LEVEL_COUNT; i++) {
 				//pick an item from the list
-				Item item = ItemForLevel (currentLevel);
+				Item item = Factory.GetItemForLevel (currentLevel);
 				item.Location = map.GetRandomCell (true);
 				items.Add (item);
 			}
 		}
 		RenderItems ();
 	}
-	
-	private Item ItemForLevel (int level)
-	{
-		int itemNum = UnityEngine.Random.Range (0, levelItemTypes [level].Count);	
-		Type t = levelItemTypes [level] [itemNum];
-		Item item;
-		item = (Item)Activator.CreateInstance (t);
-		return item;
-	}
+
 	
 	private void RenderItems ()
 	{
@@ -283,7 +271,9 @@ public class GameController : MonoBehaviour
 				Enemy enemy = Factory.GetEnemyForLevel (currentLevel);
 				enemy.Location = map.GetRandomCell (true);
 				map.Cells [enemy.Location.x, enemy.Location.y].Passable = false;
-				enemy.Loot = ItemForLevel (currentLevel);
+				if (UnityEngine.Random.Range (0, 100) <= 80) {
+					enemy.Loot = Factory.GetItemForLevel (currentLevel);
+				}
 				enemies.Add (enemy);
 			}
 		}
@@ -556,8 +546,11 @@ public class GameController : MonoBehaviour
 						audio.PlayOneShot (audioDieEnemy, VOLUME);
 						//drop loot
 						Item loot = enemies [enemyIndex].Loot;
-						loot.Location = new Address (enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y);
-						items.Add (loot);
+						if (loot != null) {
+							loot.Location = new Address (enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y);
+							items.Add (loot);
+							DisplayMessage (enemies [enemyIndex].Name + " drops " + loot.Name);
+						}
 						//remove enemy
 						map.Cells [enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y].Passable = true;
 						enemies.RemoveAt (enemyIndex);						

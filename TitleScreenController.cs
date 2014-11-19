@@ -42,18 +42,22 @@ public class TitleScreenController : MonoBehaviour
 	
 	public void SetSoundLevel ()
 	{
-		float level = sliderSound.value;
-		PlayerPrefs.SetString ("soundLevel", level.ToString ());
-		sourceFX.volume = level;
-		sourceFX.Play ();
-		//audio.PlayOneShot (titleSoundTest, level);
+		if (sliderSound != null) {
+			float level = sliderSound.value;
+			PlayerPrefs.SetString ("soundLevel", level.ToString ());
+			sourceFX.volume = level;
+			sourceFX.Play ();
+			//audio.PlayOneShot (titleSoundTest, level);
+		}
 	}
 	
 	public void SetMusicLevel ()
 	{
-		float level = sliderMusic.value;
-		PlayerPrefs.SetString ("musicLevel", level.ToString ());
-		sourceMusic.volume = level;
-		sourceMusic.Play ();
+		if (sliderMusic != null) {
+			float level = sliderMusic.value;
+			PlayerPrefs.SetString ("musicLevel", level.ToString ());
+			sourceMusic.volume = level;
+			sourceMusic.Play ();
+		}
 	}
 }
